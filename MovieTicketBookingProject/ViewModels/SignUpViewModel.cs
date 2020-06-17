@@ -19,15 +19,14 @@ namespace MovieTicketBookingProject.ViewModels
         [Required(ErrorMessage = "The  Email address is required")]
         [RegularExpression(@"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", ErrorMessage = "Please enter a valid email address")]
         public string Email { get; set; }
-
-        [DataType(DataType.Password)]
-        [Required(ErrorMessage = "The  Password is required")]
-      
+        [Required]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
+        [Required]
+        [Display(Name = "Re-type Password")]
+        [Compare( "Password", ErrorMessage = "Passwords do not match")]
+        public string PasswordConfirm { get; set; }
 
-        [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "The confirm password does not match, type again!")]
-        public string ConfirmPassword { get; set; }
     }
 }

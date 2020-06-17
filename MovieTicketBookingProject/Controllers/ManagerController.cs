@@ -50,7 +50,7 @@ namespace MovieTicketBookingProject.Controllers
         }
 
 
-        public ActionResult Register()
+        public ActionResult SignUp()
         {
             SignUpViewModel Signup = new SignUpViewModel();
 
@@ -60,25 +60,27 @@ namespace MovieTicketBookingProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Register(SignUpViewModel newUser)
+        public ActionResult SignUp(SignUpViewModel Vmodel,User _user)
         {
             try
             {
                 var users = context.Users.ToList();
-                foreach (var item in users )
+                foreach (var user in users )
                 {
-                    if(item.Email==newUser.Email)
+                    if(user.Email== Vmodel.Email )
                     {
-                        ViewBag.ErrorMessage = " Email already exist";
+                        return RedirectToAction(nameof(UserErrorLoginMassage));
+                        /* ViewBag.ErrorMessage = " Email already exist";*/
+                      
                     }
-                    else if(item.Email != newUser.Email)
+                    else if(user.Email != Vmodel.Email )
                     {
-                        User userdb = new User();
-                        userdb.FirstName = newUser.FirstName;
-                        userdb.LastName = newUser.LastName;
-                        userdb.Email = newUser.Email;
-                        userdb.Password = newUser.Password;
-                        context.Add(userdb);
+                       _user = new User();
+                        _user.FirstName = Vmodel.FirstName;
+                        _user.LastName = Vmodel.LastName;
+                        _user.Email = Vmodel.Email;
+                        _user.Password = Vmodel.Password;
+                        context.Add(_user);
                         context.SaveChanges();
                         return RedirectToAction(nameof(UserIndex));
                     }
@@ -108,38 +110,44 @@ namespace MovieTicketBookingProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(LoginViewModel viewmodel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                var admins = context.Admins.ToList();
-                var users = context.Users.ToList();
-                // TODO: Add insert logic here
-                foreach (var item in admins)
+                try
                 {
-                    if (item.Email == viewmodel.Email)
+                    var admins = context.Admins.ToList();
+                    var users = context.Users.ToList();
+                    // TODO: Add insert logic here
+                    foreach (var item in admins)
                     {
-                        return RedirectToAction(nameof(AdminIndex));
-                    }
-                    else
-                    {
-                        foreach (var u in users)
+                        if (item.Email == viewmodel.Email)
                         {
-                            if (u.Email == viewmodel.Email && item.Password == viewmodel.Password)
+                            return RedirectToAction(nameof(AdminIndex));
+                        }
+                        else
+                        {
+                            foreach (var u in users)
                             {
-                                return RedirectToAction(nameof(UserIndex));
+                                if (u.Email == viewmodel.Email )
+                                {
+                                    return RedirectToAction(nameof(UserIndex));
+                                }
                             }
                         }
+
                     }
-                    
+
+
+
+                    return RedirectToAction(nameof(UserErrorLoginMassage));
+                }
+                catch
+                {
+                    return View();
                 }
                
-
-
-                return RedirectToAction(nameof(UserErrorLoginMassage));
             }
-            catch
-            {
-                return View();
-            }
+            ModelState.AddModelError("", "You have to fill all the required fields!");
+            return View(Login());
         }
 
      

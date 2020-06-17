@@ -1,18 +1,18 @@
 ﻿@model MovieTicketBookingProject.ViewModels.SignUpViewModel
 
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "SignUp";
 }
 
-<h1>Register</h1>
+<h1>SignUp</h1>
 
 <h4>SignUpViewModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Register">
+        <form asp-action="SignUp">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-           
+          
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />
@@ -27,7 +27,6 @@
                 <label asp-for="Email" class="control-label"></label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
-                <p>@ViewBag.ErrorMessage</p>
             </div>
             <div class="form-group">
                 <label asp-for="Password" class="control-label"></label>
@@ -35,9 +34,9 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ConfirmPassword" class="control-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                <label asp-for="PasswordConfirm" class="control-label"></label>
+                <input asp-for="PasswordConfirm" class="form-control" />
+                <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -47,6 +46,6 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="HomebackIndex">Back to List</a>
 </div>
 
