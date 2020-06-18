@@ -60,41 +60,49 @@ namespace MovieTicketBookingProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult SignUp(SignUpViewModel Vmodel,User _user)
+        public ActionResult SignUp(SignUpViewModel Vmodel, User _user)
         {
-            try
+            bool exist = false;
+            if (ModelState.IsValid)
             {
+
+
                 var users = context.Users.ToList();
-                foreach (var user in users )
+
+
+                foreach (var user in users)
                 {
-                    if(user.Email== Vmodel.Email )
+                    if (user.Email == Vmodel.Email)
                     {
-                        return RedirectToAction(nameof(UserErrorLoginMassage));
-                        /* ViewBag.ErrorMessage = " Email already exist";*/
-                      
-                    }
-                    else if(user.Email != Vmodel.Email )
-                    {
-                       _user = new User();
-                        _user.FirstName = Vmodel.FirstName;
-                        _user.LastName = Vmodel.LastName;
-                        _user.Email = Vmodel.Email;
-                        _user.Password = Vmodel.Password;
-                        context.Add(_user);
-                        context.SaveChanges();
-                        return RedirectToAction(nameof(UserIndex));
+                        exist = true;
+                        ModelState.AddModelError("", "It looks like your email is already exist, you should login");
+                        return View();
+
                     }
 
                 }
-              
+                if (exist == false)
+                {
+                    _user = new User()
+                    {
+                        FirstName = Vmodel.FirstName,
+                        LastName = Vmodel.LastName,
+                        Email = Vmodel.Email,
+                        Password = Vmodel.Password
+                    };
+                    context.Add(_user);
+                    context.SaveChanges();
+                    return RedirectToAction(nameof(UserIndex));
 
-               return RedirectToAction(nameof(UserErrorLoginMassage));
+                }
+                else
+                {
+                    ModelState.AddModelError("", "You have to fill all the required fields!");
+                    return View();
+                }
 
             }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction(nameof(UserErrorLoginMassage));
         }
 
 
@@ -137,14 +145,20 @@ namespace MovieTicketBookingProject.Controllers
                                 {
                                     return RedirectToAction(nameof(UserIndex));
                                 }
-                                else if ((u.Email == viewmodel.Email && u.Password != viewmodel.Password) || (u.Email != viewmodel.Email && u.Password == viewmodel.Password))
+                                else if (u.Email == viewmodel.Email && u.Password != viewmodel.Password )
                                 {
-                                    ModelState.AddModelError("", "It seems that Email or password is not correct ");
+                                    ModelState.AddModelError("Password ", " password is not correct ");
+                                    return View();
+                                }
+                                else if((u.Email != viewmodel.Email && u.Password == viewmodel.Password))
+                                {
+                                    ModelState.AddModelError("Email ", " Email  is not correct ");
                                     return View();
                                 }
                                 else
                                 {
-                                    ModelState.AddModelError("", "It seems that you have no account with us, you have to Signup");
+                                    ModelState.AddModelError("", "It seems that you have no account with us, you have to Signup"); 
+                                        
                                     return View();
                                 }
                             }
@@ -163,7 +177,7 @@ namespace MovieTicketBookingProject.Controllers
                
             }
             ModelState.AddModelError("", "You have to fill all the required fields!");
-            return View(Login());
+            return View();
         }
 
      
