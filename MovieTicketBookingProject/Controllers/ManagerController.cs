@@ -119,17 +119,33 @@ namespace MovieTicketBookingProject.Controllers
                     // TODO: Add insert logic here
                     foreach (var item in admins)
                     {
-                        if (item.Email == viewmodel.Email)
+                        if (item.Email == viewmodel.Email && item.Password==viewmodel.Password)
                         {
+                            
                             return RedirectToAction(nameof(AdminIndex));
                         }
-                        else
+                        else if((item.Email == viewmodel.Email && item.Password != viewmodel.Password )|| (item.Email != viewmodel.Email && item.Password == viewmodel.Password))
+                        {
+                            ModelState.AddModelError("", "It seems that Email or password is not correct for admin");
+                            return View();
+                        }
+                      else
                         {
                             foreach (var u in users)
                             {
-                                if (u.Email == viewmodel.Email )
+                                if (u.Email == viewmodel.Email && u.Password == viewmodel.Password )
                                 {
                                     return RedirectToAction(nameof(UserIndex));
+                                }
+                                else if ((u.Email == viewmodel.Email && u.Password != viewmodel.Password) || (u.Email != viewmodel.Email && u.Password == viewmodel.Password))
+                                {
+                                    ModelState.AddModelError("", "It seems that Email or password is not correct ");
+                                    return View();
+                                }
+                                else
+                                {
+                                    ModelState.AddModelError("", "It seems that you have no account with us, you have to Signup");
+                                    return View();
                                 }
                             }
                         }
