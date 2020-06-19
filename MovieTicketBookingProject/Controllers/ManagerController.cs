@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FileUploadControl;
 using Microsoft.AspNetCore.Http;
@@ -31,15 +32,21 @@ namespace MovieTicketBookingProject.Controllers
            
             return View();
         }
+        public ActionResult About()
+        {
+            return View();
+        }
+        public ActionResult Contact()
+        {
+            return View();
+        }
         public ActionResult HomebackIndex()
         {
-
             var movies = Movie.GetAllMovies();
             return View(movies);
         }
         public ActionResult AdminIndex()
         {
-
             var movies = Movie.GetAllMovies();
             return View(movies);
         }
@@ -65,11 +72,7 @@ namespace MovieTicketBookingProject.Controllers
             bool exist = false;
             if (ModelState.IsValid)
             {
-
-
                 var users = context.Users.ToList();
-
-
                 foreach (var user in users)
                 {
                     if (user.Email == Vmodel.Email)
@@ -77,9 +80,7 @@ namespace MovieTicketBookingProject.Controllers
                         exist = true;
                         ModelState.AddModelError("", "It looks like your email is already exist, you should login");
                         return View();
-
                     }
-
                 }
                 if (exist == false)
                 {
@@ -95,14 +96,16 @@ namespace MovieTicketBookingProject.Controllers
                     return RedirectToAction(nameof(UserIndex));
 
                 }
-                else
-                {
-                    ModelState.AddModelError("", "You have to fill all the required fields!");
-                    return View();
-                }
+                //else
+                //{
+                //    ModelState.AddModelError("", "You have to fill all the required fields!");
+                //    return View();
+                //}
 
             }
-            return RedirectToAction(nameof(UserErrorLoginMassage));
+            ModelState.AddModelError("", "You have to fill all the required fields!");
+            return View();
+            //return RedirectToAction(nameof(UserErrorLoginMassage));
         }
 
 
@@ -120,39 +123,42 @@ namespace MovieTicketBookingProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
-                {
+               
                     var admins = context.Admins.ToList();
                     var users = context.Users.ToList();
-                    // TODO: Add insert logic here
-                    foreach (var item in admins)
+                foreach (var admin in admins)
+                {
+                    if (admin.Email == viewmodel.Email && admin.Password == viewmodel.Password)
                     {
-                        if (item.Email == viewmodel.Email && item.Password==viewmodel.Password)
-                        {
-                            
-                            return RedirectToAction(nameof(AdminIndex));
-                        }
-                        else if((item.Email == viewmodel.Email && item.Password != viewmodel.Password )|| (item.Email != viewmodel.Email && item.Password == viewmodel.Password))
-                        {
-                            ModelState.AddModelError("", "It seems that Email or password is not correct for admin");
-                            return View();
-                        }
-                      else
-                        {
+
+                        return RedirectToAction(nameof(AdminIndex));
+                    }
+                    else if (admin.Email == viewmodel.Email && admin.Password != viewmodel.Password) 
+                    {
+                        ModelState.AddModelError("Password", "It seems this  password is not correct for admin");
+                        return View();
+                    }
+                    else if (admin.Email != viewmodel.Email && admin.Password == viewmodel.Password)
+                    {
+                        ModelState.AddModelError("Email", "It seems this Email  is not correct for admin");
+                        return View();
+                    }
+                }
                             foreach (var u in users)
                             {
                                 if (u.Email == viewmodel.Email && u.Password == viewmodel.Password )
                                 {
+                                    
                                     return RedirectToAction(nameof(UserIndex));
                                 }
                                 else if (u.Email == viewmodel.Email && u.Password != viewmodel.Password )
                                 {
-                                    ModelState.AddModelError("Password ", " password is not correct ");
+                                    ModelState.AddModelError("Password", " password is not correct ");
                                     return View();
                                 }
-                                else if((u.Email != viewmodel.Email && u.Password == viewmodel.Password))
+                                else if(u.Email != viewmodel.Email && u.Password == viewmodel.Password)
                                 {
-                                    ModelState.AddModelError("Email ", " Email  is not correct ");
+                                    ModelState.AddModelError("Email", " Email  is not correct ");
                                     return View();
                                 }
                                 else
@@ -162,18 +168,14 @@ namespace MovieTicketBookingProject.Controllers
                                     return View();
                                 }
                             }
-                        }
+                        
 
-                    }
+                    
 
 
 
-                    return RedirectToAction(nameof(UserErrorLoginMassage));
-                }
-                catch
-                {
-                    return View();
-                }
+                   
+              
                
             }
             ModelState.AddModelError("", "You have to fill all the required fields!");
@@ -310,6 +312,96 @@ namespace MovieTicketBookingProject.Controllers
             {
                 return View();
             }
+        }
+        public ActionResult BookNow(int id)
+        {
+            var movie = Movie.Find(id);
+            BookNowViewModel vmodel = new BookNowViewModel();
+            vmodel.Movie_Name = movie.Movie_Name;
+            vmodel.Movie_Date = movie.Showtime;
+            vmodel.Movie_Image = movie.Movie_ImageUrl;
+            
+           
+
+            return View(vmodel);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult BookNow(BookNowViewModel viewModel,Ticket ticket)
+        {
+            bool exist = false;
+            int userId = 0;
+            string image = viewModel.Movie_Image;
+            if (ModelState.IsValid)
+            {
+                var users = context.Users.ToList();
+               foreach(var user in users)
+                {
+                    if(user.Email == viewModel.User_Email)
+                    {
+                        exist = true;
+                        userId = user.ID;
+                       
+                    }
+                }
+               if(exist==false)
+                {
+
+                    //var _movie = Movie.GetAllMovies().SingleOrDefault(m => m.Movie_Name == viewModel.Movie_Name);
+                    ModelState.AddModelError("User_Email", " Your email  is not correct ");
+
+                    //return RedirectToAction(nameof(BookNow),_movie.ID);
+                    return View(viewModel);
+                }
+               if(exist==true)
+                {
+                    var _movie = Movie.GetAllMovies().SingleOrDefault(m => m.Movie_Name == viewModel.Movie_Name);
+                    ticket = new Ticket();
+                    ticket.TicketsDate = DateTime.Now;
+                    ticket.UserId = userId;
+                    ticket.MovieID = _movie.ID;
+                    if (viewModel.NumberOfSeats == 0)
+                    {
+                        ModelState.AddModelError("NumberOfSeats", "You should choose the number of tickets");
+                        return View(viewModel);
+                    }
+                  
+                    if (_movie.SeatsLeft - viewModel.NumberOfSeats < 0)
+                    {
+                        ModelState.AddModelError("NumberOfSeats", "There are not enough seats");
+                        return View(viewModel);
+                    }
+                    else
+                    {
+                        ticket.Amount = viewModel.NumberOfSeats * _movie.Price;
+                        ticket.NumOfSeats = viewModel.NumberOfSeats;
+                        _movie.SeatsLeft -= viewModel.NumberOfSeats;
+                        context.Update(_movie);
+                        context.Add(ticket);
+                        context.SaveChanges();
+                        return RedirectToAction(nameof(TicketConfirm), new { id = ticket.ID });
+                    }
+                }
+            }
+            ModelState.AddModelError("", "You have to fill all the required fields!");
+            return View(viewModel);
+        }
+        public ActionResult TicketConfirm(int id)
+        {
+            var ticket = context.Tickets.SingleOrDefault(T => T.ID == id);
+            TicketConfirmViewModel viewModel = new TicketConfirmViewModel();
+            viewModel.Amount = ticket.Amount;
+            Movie movie = Movie.Find(ticket.MovieID);
+            viewModel.Movie_Name = movie.Movie_Name;
+            viewModel.NumOfSeats = ticket.NumOfSeats;
+            viewModel.ShowDate = movie.Showtime;
+            viewModel.TicketsDate = ticket.TicketsDate;
+            var user = context.Users.SingleOrDefault(U => U.ID == ticket.UserId);
+            viewModel.User_Name = user.FirstName +" "+ user.LastName;
+
+            return View(viewModel);
         }
     }
 }

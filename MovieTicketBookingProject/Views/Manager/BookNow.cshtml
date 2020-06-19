@@ -1,0 +1,62 @@
+﻿@model MovieTicketBookingProject.ViewModels.BookNowViewModel
+
+@{
+    ViewData["Title"] = "BookNow";
+}
+
+
+
+<h4>Book Your ticket</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="BookNow">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Movie_Name" class="control-label"></label>
+                <input asp-for="Movie_Name" readonly class="form-control" />
+                <span asp-validation-for="Movie_Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                Show Date :
+                @*<label asp-for="Movie_Date" class="control-label"></label>*@
+                <input asp-for="Movie_Date" readonly class="form-control" />
+                <span asp-validation-for="Movie_Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                The number of seats :
+                @*<label asp-for="NumberOfSeats" class="control-label"></label>*@
+                <input asp-for="NumberOfSeats" class="form-control" />
+                <span asp-validation-for="NumberOfSeats" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+
+                @*<label asp-for="Movie_Image" class="control-label"></label>*@
+                @*<input asp-for="Movie_Image" class="form-control" />*@
+                <img src="@Model.Movie_Image" width="150" height="150" asp-append-version="true" />
+            </div>
+            <div class="form-group">
+                Name :
+                @*<label asp-for="User_Name" class="control-label"></label>*@
+                <input asp-for="User_Name" class="form-control" />
+                <span asp-validation-for="User_Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                Email :
+                @*<label asp-for="User_Email" class="control-label"></label>*@
+                <input asp-for="User_Email" class="form-control" />
+                <span asp-validation-for="User_Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Book Now" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="UserIndex"class="btn btn-primary" >Back to List</a>
+</div>
+
