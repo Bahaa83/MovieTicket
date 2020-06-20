@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieTicketBookingProject", "MovieTicketBookingProject\MovieTicketBookingProject.csproj", "{BE4B154D-1C4B-45AF-8C31-882E16D8E7FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileUploadControl", "FileUploadControl\FileUploadControl.csproj", "{A2AE4C35-5D19-4071-9F5B-EBC9C6BEEA5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileUploadControl", "FileUploadControl\FileUploadControl.csproj", "{A2AE4C35-5D19-4071-9F5B-EBC9C6BEEA5F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "movieapi", "MovieApi\movieapi.csproj", "{57FBD3B1-734F-4186-9EA5-5ED85FA46C13}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{A2AE4C35-5D19-4071-9F5B-EBC9C6BEEA5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2AE4C35-5D19-4071-9F5B-EBC9C6BEEA5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2AE4C35-5D19-4071-9F5B-EBC9C6BEEA5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57FBD3B1-734F-4186-9EA5-5ED85FA46C13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57FBD3B1-734F-4186-9EA5-5ED85FA46C13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57FBD3B1-734F-4186-9EA5-5ED85FA46C13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57FBD3B1-734F-4186-9EA5-5ED85FA46C13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
