@@ -123,9 +123,9 @@ namespace MovieTicketBookingProject.Controllers
         {
             if (ModelState.IsValid)
             {
-               
-                    var admins = context.Admins.ToList();
-                    var users = context.Users.ToList();
+
+                var admins = context.Admins.ToList();
+                var users = context.Users.ToList();
                 foreach (var admin in admins)
                 {
                     if (admin.Email == viewmodel.Email && admin.Password == viewmodel.Password)
@@ -133,7 +133,7 @@ namespace MovieTicketBookingProject.Controllers
 
                         return RedirectToAction(nameof(AdminIndex));
                     }
-                    else if (admin.Email == viewmodel.Email && admin.Password != viewmodel.Password) 
+                    else if (admin.Email == viewmodel.Email && admin.Password != viewmodel.Password)
                     {
                         ModelState.AddModelError("Password", "It seems this  password is not correct for admin");
                         return View();
@@ -144,40 +144,26 @@ namespace MovieTicketBookingProject.Controllers
                         return View();
                     }
                 }
-                            foreach (var u in users)
-                            {
-                                if (u.Email == viewmodel.Email && u.Password == viewmodel.Password )
-                                {
-                                    
-                                    return RedirectToAction(nameof(UserIndex));
-                                }
-                                else if (u.Email == viewmodel.Email && u.Password != viewmodel.Password )
-                                {
-                                    ModelState.AddModelError("Password", " password is not correct ");
-                                    return View();
-                                }
-                                else if(u.Email != viewmodel.Email && u.Password == viewmodel.Password)
-                                {
-                                    ModelState.AddModelError("Email", " Email  is not correct ");
-                                    return View();
-                                }
-                                else
-                                {
-                                    ModelState.AddModelError("", "It seems that you have no account with us, you have to Signup"); 
-                                        
-                                    return View();
-                                }
-                            }
-                        
+                foreach (var u in users)
+                {
+                    if (u.Email == viewmodel.Email && u.Password == viewmodel.Password)
+                    {
 
-                    
+                        return RedirectToAction(nameof(UserIndex));
+                    }
+                    if (u.Email == viewmodel.Email && u.Password != viewmodel.Password)
+                    {
+                        ModelState.AddModelError("Password", " password is not correct ");
+                        return View();
+                    }
+                    if (u.Email != viewmodel.Email && u.Password == viewmodel.Password)
+                    {
+                        ModelState.AddModelError("Email", " Email  is not correct ");
+                        return View();
+                    }
 
-
-
-                   
-              
-               
-            }
+                }
+            }         
             ModelState.AddModelError("", "You have to fill all the required fields!");
             return View();
         }
